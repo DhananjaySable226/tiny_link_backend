@@ -25,11 +25,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the React app build directory
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-}
-
 // Health check endpoint - MUST be before redirect handler
 app.get('/healthz', (req, res) => {
   res.status(200).json({
@@ -48,8 +43,6 @@ app.get('/:code', async (req, res) => {
   try {
     const { code } = req.params;
     
-    console.log(`Redirect request received for code: ${code}`);
-    
     // Skip if it looks like a frontend route
     if (code === 'code' || code === 'favicon.ico') {
       return res.status(404).json({ error: 'Not found' });
@@ -58,48 +51,24 @@ app.get('/:code', async (req, res) => {
     // Find the link
     const link = await linkModel.findByCode(code);
     
-    console.log(`Link found:`, link);
     
     if (!link) {
-      // Return 404 if not in production, otherwise continue to frontend
-      if (process.env.NODE_ENV === 'production') {
-        return res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-      }
       return res.status(404).json({ error: 'Link not found' });
     }
     
     // Update click count
     const updated = await linkModel.updateClicks(code);
-    console.log(`Updated link:`, updated);
     
     // Redirect to the long URL
     res.redirect(302, link.long_url);
   } catch (error) {
-    console.error('Redirect error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Serve React app for all other routes (in production)
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-  });
-}
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
-
 // 404 handler
 app.use((req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-  } else {
-    res.status(404).json({ error: 'Route not found' });
-  }
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Start server
