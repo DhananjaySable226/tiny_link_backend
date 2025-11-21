@@ -12,10 +12,10 @@ const schema = fs.readFileSync(schemaPath, 'utf8');
 
 // Create a new pool instance with individual parameters
 const pool = new Pool({
-  user: process.env.DATABASE_USER || 'neondb_owner',
-  host: process.env.DATABASE_HOST || 'ep-wild-bush-ahgojhme-pooler.c-3.us-east-1.aws.neon.tech',
-  database: process.env.DATABASE_NAME || 'neondb?sslmode=require&channel_binding=require',
-  password: process.env.DATABASE_PASSWORD || 'npg_aLVMx7lhrb5p',
+  user: process.env.DATABASE_USER || '',
+  host: process.env.DATABASE_HOST || '',
+  database: process.env.DATABASE_NAME || '',
+  password: process.env.DATABASE_PASSWORD || '',
   port: process.env.DATABASE_PORT || 5432,
   ssl: false // Disable SSL for local development
 });
