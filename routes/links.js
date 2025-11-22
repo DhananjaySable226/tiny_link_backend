@@ -5,7 +5,6 @@ const Link = require('../models/Link');
 
 const linkModel = new Link(db);
 
-// Create a new short link
 router.post('/', async (req, res) => {
   try {
     const { longUrl, customCode } = req.body;
@@ -24,7 +23,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get all links
 router.get('/', async (req, res) => {
   try {
     const links = await linkModel.findAll();
@@ -34,7 +32,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get stats for a specific link
 router.get('/:code', async (req, res) => {
   try {
     const { code } = req.params;
@@ -50,7 +47,6 @@ router.get('/:code', async (req, res) => {
   }
 });
 
-// Delete a link
 router.delete('/:code', async (req, res) => {
   try {
     const { code } = req.params;

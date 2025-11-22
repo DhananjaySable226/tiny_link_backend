@@ -5,7 +5,6 @@ const path = require('path');
 
 dotenv.config();
 
-// Use individual parameters for Neon database
 const poolConfig = {
   user: process.env.DATABASE_USER,
   host: process.env.DATABASE_HOST,
@@ -17,10 +16,7 @@ const poolConfig = {
   }
 };
 
-// Create a new pool instance
 const pool = new Pool(poolConfig);
-
-// Auto-create tables on startup
 const initializeTables = async () => {
   try {
     const schemaPath = path.join(__dirname, '../database/schema.sql');
@@ -33,13 +29,11 @@ const initializeTables = async () => {
   }
 };
 
-// Test the database connection and initialize tables
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {
     console.error('Database connection error:', err.stack);
   } else {
     console.log('Database connected successfully');
-    // Initialize tables after successful connection
     initializeTables();
   }
 });
