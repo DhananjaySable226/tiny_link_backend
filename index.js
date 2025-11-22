@@ -21,7 +21,11 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow all origins (you can restrict this to specific domains in production)
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
